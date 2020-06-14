@@ -18,8 +18,8 @@ class ViewController: UIViewController {
         originalAudioURL = Bundle.main.url(forResource: "original", withExtension: "mp4")!
         encodedAudioURL = Bundle.main.url(forResource: "encoded", withExtension: "mp4")!
         
-        let originalDuration = AVURLAsset(url: originalAudioURL).duration.seconds
-        let encodedDuration = AVURLAsset(url: encodedAudioURL).duration.seconds
+        let originalDuration = AVURLAsset(url: originalAudioURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey: true]).duration.seconds
+        let encodedDuration = AVURLAsset(url: encodedAudioURL, options: [AVURLAssetPreferPreciseDurationAndTimingKey: true]).duration.seconds
         print("Original duration: \(originalDuration)")
         print("Encoded duration: \(encodedDuration)")
         
