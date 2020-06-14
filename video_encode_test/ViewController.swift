@@ -1,21 +1,41 @@
 import UIKit
 import DSWaveformImage
+import AVFoundation
 
 class ViewController: UIViewController {
     @IBOutlet weak var topWaveformView: UIImageView!
     @IBOutlet weak var bottomWaveformView: UIImageView!
+    @IBOutlet weak var topWaveWidth: NSLayoutConstraint!
+    @IBOutlet weak var bottomWaveWidth: NSLayoutConstraint!
+    
+    private var originalAudioURL: URL!
+    private var encodedAudioURL: URL!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+       
+        originalAudioURL = Bundle.main.url(forResource: "original", withExtension: "mp4")!
+        encodedAudioURL = Bundle.main.url(forResource: "encoded", withExtension: "mp4")!
+        
+        let originalDuration = AVURLAsset(url: originalAudioURL).duration.seconds
+        let encodedDuration = AVURLAsset(url: encodedAudioURL).duration.seconds
+        print("Original duration: \(originalDuration)")
+        print("Encoded duration: \(encodedDuration)")
+        
+        if originalDuration > encodedDuration {
+            topWaveWidth.constant = view.frame.width
+            bottomWaveWidth.constant = view.frame.width * CGFloat( encodedDuration / originalDuration )
+        } else {
+            topWaveWidth.constant = view.frame.width * CGFloat( originalDuration / encodedDuration)
+            bottomWaveWidth.constant = view.frame.width
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         let waveformImageDrawer = WaveformImageDrawer()
-        let originalAudioURL = Bundle.main.url(forResource: "original", withExtension: "mp4")!
-        let encodedAudioURL = Bundle.main.url(forResource: "encoded", withExtension: "mp4")!
 
         // always uses background thread rendering
         waveformImageDrawer.waveformImage(fromAudioAt: originalAudioURL,
